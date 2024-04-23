@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
 import { gitHubApi } from "../../api/gitHubApi";
+import { UserDetail } from "../components/UserDetail";
+import { GithubUser } from "../../interfaces/githubUser";
+import { DataTableRepos } from "../components/DataTableRepos";
+import { GithubRepo } from "../../interfaces/GithubRepo";
 
 const getUserData = gitHubApi.get("/user");
 
@@ -8,27 +12,27 @@ const getUserRepoData = (login: string) => {
 };
 
 export const HomePage = () => {
-  const [userData, setUserData] = useState([]);
-  const [userRepoData, setUserRepoData] = useState([]);
+  const [userData, setUserData] = useState({} as GithubUser);
+  const [userRepoData, setUserRepoData] = useState([] as GithubRepo[]);
 
   useEffect(() => {
     getUserData.then((res) => {
-      console.log(res.data);
       setUserData(res.data);
       getUserRepoData(res.data.login).then((res) => {
-        console.log(res.data);
         setUserRepoData(res.data);
       });
     });
   }, []);
+
   return (
     <>
-      <h1>HomePage</h1>
       <div>
-        <pre>{userData && JSON.stringify(userData, null, 2)}</pre>
+        <UserDetail data={userData} />
       </div>
       <div>
-        <pre>{userRepoData && JSON.stringify(userRepoData, null, 2)}</pre>
+        <h2>Repositories</h2>
+        <p>Click on the row to go to the repository on GitHub.</p>
+        <DataTableRepos data={userRepoData} />
       </div>
     </>
   );

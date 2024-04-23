@@ -7,7 +7,7 @@ const getAccessToken = async (code: string) => {
     client_secret: import.meta.env.VITE_GITHUB_CLIENT_SECRET,
     code,
   });
-  console.log(`data: ${JSON.stringify(data)}`);
+
   return data;
 };
 
@@ -17,19 +17,17 @@ export const AuthCallbackPage = () => {
     if (!code) {
       const error = new URLSearchParams(window.location.search).get("error");
       if (error) {
-        console.log(error);
+        window.location.href = "/";
       }
     }
-    console.log(`code: ${code}`);
 
     getAccessToken(code!)
       .then((response) => {
-        console.log(`response: ${JSON.stringify(response)}`);
         sessionStorage.setItem("token", response.access_token);
         window.location.href = "/";
       })
-      .catch((error) => {
-        console.log(error);
+      .catch(() => {
+        window.location.href = "/";
       });
   }, []);
 
