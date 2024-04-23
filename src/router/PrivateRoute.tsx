@@ -6,6 +6,11 @@ interface pros {
 }
 
 export const PrivateRoute: FC<pros> = ({ children }) => {
-  const isAuthenticated = false;
+  const isAuthenticated =
+    sessionStorage.getItem("token") != undefined ||
+    sessionStorage.getItem("token") != null
+      ? true
+      : false;
+
   return isAuthenticated ? <>{children}</> : <Navigate to="/auth/login" />;
 };
