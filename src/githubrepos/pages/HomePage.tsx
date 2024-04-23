@@ -5,12 +5,7 @@ import { type GithubUserData } from "../../interfaces/GithubUser";
 import { DataTableRepos } from "../components/DataTableRepos";
 import { GithubRepo } from "../../interfaces/GithubRepo";
 import { Button } from "primereact/button";
-
-const getUserData = gitHubApi.get("/user");
-
-const getUserRepoData = (login: string) => {
-  return gitHubApi.get(`/users/${login}/repos`);
-};
+import { AxiosResponse } from "axios";
 
 export const HomePage = () => {
   const [userData, setUserData] = useState({} as GithubUserData);
@@ -24,18 +19,24 @@ export const HomePage = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
+      const getUserData = gitHubApi.get("/user");
+
+      const getUserRepoData = (login: string) => {
+        return gitHubApi.get(`/users/${login}/repos`);
+      };
+
       getUserData
-        .then((res) => {
+        .then((res: AxiosResponse<GithubUserData>) => {
           setUserData(res.data);
           getUserRepoData(res.data.login)
-            .then((res) => {
+            .then((res: AxiosResponse<GithubRepo[]>) => {
               setUserRepoData(res.data);
             })
-            .catch((err) => {
+            .catch((err: Error) => {
               console.error(err);
             });
         })
-        .catch((err) => {
+        .catch((err: Error) => {
           console.error(err);
         });
     }
