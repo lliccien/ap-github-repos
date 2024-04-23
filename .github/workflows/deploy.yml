@@ -29,4 +29,4 @@ jobs:
         with:
           ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: gh-pages # Cambia esto si quieres desplegar en otra rama
-          FOLDER: dist # Cambia esto si la carpeta de construcción es diferente
+          FOLDER: app-github-repos/dist # Cambia esto si la carpeta de construcción es diferente
