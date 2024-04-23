@@ -23,15 +23,22 @@ export const HomePage = () => {
       : false;
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      window.location.href = "/auth/login";
+    if (isAuthenticated) {
+      getUserData
+        .then((res) => {
+          setUserData(res.data);
+          getUserRepoData(res.data.login)
+            .then((res) => {
+              setUserRepoData(res.data);
+            })
+            .catch((err) => {
+              console.error(err);
+            });
+        })
+        .catch((err) => {
+          console.error(err);
+        });
     }
-    getUserData.then((res) => {
-      setUserData(res.data);
-      getUserRepoData(res.data.login).then((res) => {
-        setUserRepoData(res.data);
-      });
-    });
   }, [isAuthenticated]);
 
   const handleLogout = () => {
