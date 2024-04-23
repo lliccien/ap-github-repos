@@ -16,14 +16,23 @@ export const HomePage = () => {
   const [userData, setUserData] = useState({} as GithubUserData);
   const [userRepoData, setUserRepoData] = useState([] as GithubRepo[]);
 
+  const isAuthenticated =
+    sessionStorage.getItem("token") != undefined ||
+    sessionStorage.getItem("token") != null
+      ? true
+      : false;
+
   useEffect(() => {
+    if (!isAuthenticated) {
+      window.location.href = "/auth/login";
+    }
     getUserData.then((res) => {
       setUserData(res.data);
       getUserRepoData(res.data.login).then((res) => {
         setUserRepoData(res.data);
       });
     });
-  }, []);
+  }, [isAuthenticated]);
 
   const handleLogout = () => {
     sessionStorage.clear();
