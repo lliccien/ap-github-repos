@@ -16,7 +16,7 @@ gitHub.interceptors.request.use((config) => {
 });
 
 export const gitHubApi = axios.create({
-  baseURL: "/api-github",
+  baseURL: "/api",
   headers: {
     Accept: "application/json",
   },
