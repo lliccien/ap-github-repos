@@ -5,25 +5,42 @@ import { type GithubUserData } from "../../interfaces/GithubUser";
 import { DataTableRepos } from "../components/DataTableRepos";
 import { GithubRepo } from "../../interfaces/GithubRepo";
 import { Button } from "primereact/button";
-
-const getUserData = gitHubApi.get("/user");
-
-const getUserRepoData = (login: string) => {
-  return gitHubApi.get(`/users/${login}/repos`);
-};
+import { AxiosResponse } from "axios";
 
 export const HomePage = () => {
   const [userData, setUserData] = useState({} as GithubUserData);
   const [userRepoData, setUserRepoData] = useState([] as GithubRepo[]);
 
+  const isAuthenticated =
+    sessionStorage.getItem("token") != undefined ||
+    sessionStorage.getItem("token") != null
+      ? true
+      : false;
+
   useEffect(() => {
-    getUserData.then((res) => {
-      setUserData(res.data);
-      getUserRepoData(res.data.login).then((res) => {
-        setUserRepoData(res.data);
-      });
-    });
-  }, []);
+    if (isAuthenticated) {
+      const getUserData = gitHubApi.get("/user");
+
+      const getUserRepoData = (login: string) => {
+        return gitHubApi.get(`/users/${login}/repos`);
+      };
+
+      getUserData
+        .then((res: AxiosResponse<GithubUserData>) => {
+          setUserData(res.data);
+          getUserRepoData(res.data.login)
+            .then((res: AxiosResponse<GithubRepo[]>) => {
+              setUserRepoData(res.data);
+            })
+            .catch((err: Error) => {
+              console.error(err);
+            });
+        })
+        .catch((err: Error) => {
+          console.error(err);
+        });
+    }
+  }, [isAuthenticated]);
 
   const handleLogout = () => {
     sessionStorage.clear();
