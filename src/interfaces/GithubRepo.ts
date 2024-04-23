@@ -72,6 +72,7 @@ export interface GithubRepo {
   allow_forking: boolean;
   is_template: boolean;
   web_commit_signoff_required: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   topics: any[];
   visibility: string;
   forks: number;

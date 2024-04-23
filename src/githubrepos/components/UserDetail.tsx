@@ -1,8 +1,8 @@
+import { GithubUserData } from "../../interfaces/GithubUser";
 import { FC } from "react";
-import { GithubUser } from "../../interfaces/githubUser";
 
 interface Props {
-  data: GithubUser;
+  data: GithubUserData;
 }
 
 export const UserDetail: FC<Props> = ({ data }) => {

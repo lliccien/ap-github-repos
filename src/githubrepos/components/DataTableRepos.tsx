@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { GithubRepo } from "../../interfaces/GithubRepo";
@@ -12,20 +13,22 @@ interface Props {
 export const DataTableRepos: FC<Props> = ({ data }) => {
   const [globalFilter, setGlobalFilter] = useState(null);
 
-  const formatData = (value) => {
+  const formatData = (value: any) => {
     return new Date(value).toLocaleDateString();
   };
 
-  const createAtBodyTemplate = (rowData) => {
+  const createAtBodyTemplate = (rowData: { created_at: any }) => {
     return formatData(rowData.created_at);
   };
 
-  const actionBodyTemplate = (rowData) => {
+  const actionBodyTemplate = (rowData: {
+    html_url: string | URL | undefined;
+  }) => {
     return (
       <Button
         icon="pi pi-external-link"
         onClick={() => {
-          window.open(rowData.html_url, "_blank").focus();
+          window.open(rowData.html_url, "_blank");
         }}
       />
     );
@@ -36,7 +39,7 @@ export const DataTableRepos: FC<Props> = ({ data }) => {
       <i className="pi pi-search" style={{ margin: "4px 4px 0 0" }}></i>
       <InputText
         type="search"
-        onInput={(e) => {
+        onInput={(e: any) => {
           setGlobalFilter(e.target.value);
         }}
         placeholder="Global Search"
