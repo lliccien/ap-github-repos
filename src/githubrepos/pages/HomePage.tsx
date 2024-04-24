@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { gitHubApi } from "../../api/gitHubApi";
 import { UserDetail } from "../components/UserDetail";
 import { type GithubUserData } from "../../interfaces/GithubUser";
@@ -6,16 +6,14 @@ import { DataTableRepos } from "../components/DataTableRepos";
 import { GithubRepo } from "../../interfaces/GithubRepo";
 import { Button } from "primereact/button";
 import { AxiosResponse } from "axios";
+import { UserContext } from "../../context/AuthProvider";
 
 export const HomePage = () => {
   const [userData, setUserData] = useState({} as GithubUserData);
   const [userRepoData, setUserRepoData] = useState([] as GithubRepo[]);
 
-  const isAuthenticated =
-    sessionStorage.getItem("token") != undefined ||
-    sessionStorage.getItem("token") != null
-      ? true
-      : false;
+  const { user, setUser } = useContext(UserContext);
+  const isAuthenticated = user.isAuthenticated;
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -43,15 +41,17 @@ export const HomePage = () => {
   }, [isAuthenticated]);
 
   const handleLogout = () => {
+    setUser({
+      token: "",
+      isAuthenticated: false,
+    });
     sessionStorage.clear();
     window.location.href = "/";
   };
 
   return (
     <>
-      <div>
-        <UserDetail data={userData} />
-      </div>
+      <div>{userData && <UserDetail data={userData} />}</div>
       <div className="grid">
         <div className="col-6">
           <h2>Repositories</h2>
@@ -61,7 +61,7 @@ export const HomePage = () => {
         <div className="col-6" style={{ textAlign: "right" }}>
           <Button label="Logout" onClick={handleLogout} />
         </div>
-        <DataTableRepos data={userRepoData} />
+        {userRepoData && <DataTableRepos data={userRepoData} />}
       </div>
     </>
   );

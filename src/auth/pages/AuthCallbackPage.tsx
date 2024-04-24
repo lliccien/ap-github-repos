@@ -1,5 +1,7 @@
-import { useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { gitHub } from "../../api/gitHubApi";
+import { UserContext } from "../../context/AuthProvider";
+import { Navigate } from "react-router-dom";
 
 const getAccessToken = async (code: string) => {
   const { data } = await gitHub.post("/login/oauth/access_token", {
@@ -12,24 +14,34 @@ const getAccessToken = async (code: string) => {
 };
 
 export const AuthCallbackPage = () => {
+  const { setUser } = useContext(UserContext);
+  const [redirect, setRedirect] = useState(false);
+
   useEffect(() => {
     const code = new URLSearchParams(window.location.search).get("code");
-    if (!code) {
-      const error = new URLSearchParams(window.location.search).get("error");
-      if (error) {
-        window.location.href = "/";
-      }
+    if (code) {
+      getAccessToken(code!)
+        .then((response) => {
+          setUser({
+            token: response.access_token,
+            isAuthenticated: true,
+          });
+
+          sessionStorage.setItem("token", response.access_token);
+
+          setRedirect(true);
+        })
+        .catch((error) => {
+          console.error(error);
+          return;
+        });
     }
+  }, [setUser, setRedirect]);
 
-    getAccessToken(code!)
-      .then((response) => {
-        sessionStorage.setItem("token", response.access_token);
-        window.location.href = "/";
-      })
-      .catch(() => {
-        window.location.href = "/";
-      });
-  }, []);
-
-  return <h3>Obteniendo token de acceso</h3>;
+  return (
+    <>
+      <h3>Obteniendo token de acceso</h3>
+      {redirect && <Navigate to="/home" />}
+    </>
+  );
 };
