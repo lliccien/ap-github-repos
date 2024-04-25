@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const gitHub = axios.create({
-  baseURL: "/github",
+  baseURL: "https://github.com",
   headers: {
     Accept: "application/json",
   },
@@ -17,7 +17,7 @@ gitHub.interceptors.request.use((config) => {
 });
 
 export const gitHubApi = axios.create({
-  baseURL: "/api",
+  baseURL: "https://api.github.com",
   headers: {
     Accept: "application/json",
   },
