@@ -7,11 +7,12 @@ export const gitHub = axios.create({
   },
 });
 
+gitHub.defaults.headers.common["Access-Control-Allow-Origin"] = "*";
+
 gitHub.interceptors.request.use((config) => {
   const token = sessionStorage.getItem("token");
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
-    config.headers.AccessControlAllowOrigin = "*";
   }
   return config;
 });
@@ -22,6 +23,8 @@ export const gitHubApi = axios.create({
     Accept: "application/json",
   },
 });
+
+gitHubApi.defaults.headers.common["Access-Control-Allow-Origin"] = "*";
 
 gitHubApi.interceptors.request.use((config) => {
   const token = sessionStorage.getItem("token");
