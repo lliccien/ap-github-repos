@@ -13,6 +13,10 @@ gitHub.interceptors.request.use((config) => {
   const token = sessionStorage.getItem("token");
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
+    config.headers["Access-Control-Allow-Origin"] =
+      "https://lliccien.github.io/app-github-repos/";
+    config.headers["Access-Control-Allow-Methods"] =
+      "GET,PUT,POST,DELETE,PATCH,OPTIONS";
   }
   return config;
 });
@@ -31,6 +35,10 @@ gitHubApi.interceptors.request.use((config) => {
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
     config.headers.AccessControlAllowOrigin = "*";
+    config.headers["Access-Control-Allow-Origin"] =
+      "https://lliccien.github.io/app-github-repos/";
+    config.headers["Access-Control-Allow-Methods"] =
+      "GET,PUT,POST,DELETE,PATCH,OPTIONS";
   }
   return config;
 });
